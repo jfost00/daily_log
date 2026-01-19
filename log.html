@@ -1,0 +1,96 @@
+
+
+<style>
+button {
+	height: 50px;
+	width: 50px;
+	font-size: 200%;
+	background-color: #007bff;
+	color: white;
+    	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	touch-action: manipulation; /* Control touch gestures */
+	transition: background-color 0.3s, transform 0.1s;
+}
+</style>
+
+<button data-type="primary" data-key="up" onclick="press(this)">↑</button>
+<button data-type="primary" data-key="down" onclick="press(this)">↓</button>
+
+<button data-type="modifier" onclick="press(this)">●</button>
+<button data-type="modifier" onclick="press(this)">■</button>
+<button data-type="modifier" onclick="press(this)">▲</button>
+<button data-type="modifier" onclick="press(this)">→</button>
+
+<button data-type="submit" onclick="submitEntry()">L</button>
+
+<div id="preview" style="margin: 10px 0; font-weight: bold; opacity: 0.6;">
+  (no entry)
+</div>
+
+<ul id="log"></ul>
+
+
+<script>
+const counts = { up: 0, down: 0 };
+let currentEntry = null;
+
+function press(btn) {
+  const type = btn.dataset.type;
+  const label = btn.innerText;
+
+  if (type === "primary") {
+    currentEntry = {
+      key: btn.dataset.key,
+      primary: label,
+      modifiers: [],
+      time: new Date()
+    };
+  }
+
+  if (type === "modifier") {
+    if (!currentEntry) return;
+    currentEntry.modifiers.push(label);
+  }
+
+  updatePreview();
+}
+
+function submitEntry() {
+  if (!currentEntry) return;
+
+  counts[currentEntry.key]++;
+
+  const entry = document.createElement("li");
+  entry.innerText =
+    currentEntry.time.toLocaleTimeString() +
+    " - " +
+    buildEntryText() +
+    " (" + counts[currentEntry.key] + ")";
+
+  document.getElementById("log").appendChild(entry);
+  currentEntry = null;
+  updatePreview();
+}
+
+function buildEntryText() {
+  return [
+    currentEntry.primary,
+    ...currentEntry.modifiers
+  ].join(", ");
+}
+
+function updatePreview() {
+  const preview = document.getElementById("preview");
+
+  if (!currentEntry) {
+    preview.innerText = "(no entry)";
+    preview.style.opacity = 0.4;
+    return;
+  }
+
+  preview.innerText = buildEntryText();
+  preview.style.opacity = 1;
+}
+</script>
