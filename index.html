@@ -27,6 +27,12 @@ button {
 
 <button data-type="submit" onclick="submitEntry()">L</button>
 
+<button onclick="toggleNote()">＋</button>
+<textarea id="note"
+  placeholder="Optional note…"
+  style="display:none; width:100%; margin-top:6px;">
+</textarea>
+
 <div id="preview" style="margin: 10px 0; font-weight: bold; opacity: 0.6;">
   (no entry)
 </div>
@@ -35,6 +41,11 @@ button {
 
 
 <script>
+function toggleNote() {
+  const note = document.getElementById("note");
+  note.style.display = note.style.display === "none" ? "block" : "none";
+}
+
 const counts = { up: 0, down: 0, flat: 0 };
 let currentEntry = null;
 
@@ -47,6 +58,7 @@ function press(btn) {
       key: btn.dataset.key,
       primary: label,
       modifiers: [],
+	  note: "",
       time: new Date()
     };
   }
@@ -64,13 +76,23 @@ function submitEntry() {
 
   counts[currentEntry.key]++;
 
-  const entry = document.createElement("li");
-  entry.innerText =
+const noteEl = document.getElementById("note");
+currentEntry.note = noteEl.value.trim();
+noteEl.value = "";
+noteEl.style.display = "none";
+
+  let text = 
     currentEntry.time.toLocaleTimeString() +
     " - " +
     buildEntryText() +
-    " (" + counts[currentEntry.key] + ")";
+    " (" + counts[currentEntry.key] + ") ";
 
+  if (currentEntry.note) {
+    text += " - " + currentEntry.note;
+  }
+
+  const entry = document.createElement("li");
+  entry.innerText = text;
   document.getElementById("log").appendChild(entry);
   currentEntry = null;
   updatePreview();
