@@ -13,7 +13,7 @@ button {
 	touch-action: manipulation; /* Control touch gestures */
 	transition: background-color 0.3s, transform 0.1s;
 }
-#log {
+#logbtn {
 	width: 150px;
 	color: black
 }
@@ -29,7 +29,7 @@ button {
 <button data-type="modifier" onclick="press(this)">X</button>
 <button onclick="toggleNote()">＋</button>
 
-<button data-type="submit" id="log" onclick="submitEntry()">L</button>
+<button data-type="submit" id="logbtn" onclick="submitEntry()">L</button>
 
 <textarea id="note"
   placeholder="Optional note…"
